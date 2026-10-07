@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123c39">
+  <title>Mahjong Garden — Tile Solitaire</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #203b36;
+      --muted: #71817a;
+      --green: #164b43;
+      --felt: #1d6657;
+      --felt-dark: #164f45;
+      --gold: #dfb96c;
+      --paper: #f7f3e9;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 50% -20%, rgba(247, 239, 214, .85), transparent 48%),
+        #f3efe4;
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1320px, 100%);
+      margin: 0 auto;
+      padding: 24px 34px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 23px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid rgba(223, 185, 108, .65);
+      border-radius: 13px;
+      color: #f1d89e;
+      background: var(--green);
+      box-shadow: 0 4px 12px #164b4322;
+      font-size: 22px;
+    }
+
+    .brand-name {
+      margin: 0;
+      color: var(--green);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: .01em;
+    }
+
+    .brand-caption {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .top-actions { display: flex; gap: 9px; }
+
+    .quiet-button, .primary-button, .tool-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      border: 1px solid #d8d4c8;
+      border-radius: 10px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, .55);
+      cursor: pointer;
+      transition: transform .16s ease, background .16s ease, border-color .16s ease;
+    }
+
+    .quiet-button { padding: 0 15px; font-size: 13px; }
+    .quiet-button:hover, .tool-button:hover { border-color: #b8ad91; background: #fffdf7; }
+    button:active { transform: translateY(1px); }
+    button:focus-visible { outline: 3px solid #e0b961; outline-offset: 3px; }
+
+    .hero {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin: 0 1px 17px;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: #94723b;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #193f39;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 500;
+      letter-spacing: -.025em;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: #6c7a73;
+      font-size: 13px;
+    }
+
+    .stats { display: flex; align-items: center; gap: 8px; }
+
+    .stat {
+      min-width: 92px;
+      padding: 10px 15px 9px;
+      border: 1px solid #e1dccf;
+      border-radius: 10px;
+      background: rgba(255,255,255,.5);
+      text-align: center;
+    }
+
+    .stat-label {
+      display: block;
+      margin-bottom: 3px;
+      color: #78857e;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      color: #25443d;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .table {
+      position: relative;
+      overflow: hidden;
+      padding: 16px;
+      border: 1px solid #bb9e66;
+      border-radius: 17px;
+      background: #a8834c;
+      box-shadow: 0 15px 35px #44361c20, inset 0 0 0 1px #f3d59670;
+    }
+
+    .felt {
+      position: relative;
+      min-height: 450px;
+      overflow: hidden;
+      border: 1px solid #83a78b;
+      border-radius: 10px;
+      background:
+        radial-gradient(ellipse at 50% 44%, #267763 0%, var(--felt) 55%, var(--felt-dark) 100%);
+      box-shadow: inset 0 0 36px #092f284d;
+    }
+
+    .felt::before, .felt::after {
+      position: absolute;
+      z-index: 0;
+      top: 50%;
+      left: 50%;
+      width: min(44vw, 450px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(224, 199, 140, .10);
+      border-radius: 50%;
+      content: "";
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .felt::after { width: min(35vw, 355px); border-color: rgba(224, 199, 140, .07); }
+
+    .board {
+      position: absolute;
+      z-index: 1;
+      inset: 22px 10px;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      grid-template-rows: repeat(8, minmax(0, 1fr));
+      align-items: stretch;
+      justify-items: stretch;
+      isolation: isolate;
+    }
+
+    @media (min-width: 761px) {
+      .felt { min-height: 620px; }
+      .board { right: auto; left: 50%; width: min(calc(100% - 36px), 760px); transform: translateX(-50%); }
+    }
+
+    .tile {
+      position: relative;
+      z-index: var(--level);
+      display: grid;
+      min-width: 0;
+      min-height: 0;
+      width: min(100%, 72px);
+      justify-self: center;
+      margin: 4px;
+      padding: 0;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      cursor: pointer;
+      transform: translate(calc(var(--level) * 11px), calc(var(--level) * -10px));
+      transition: filter .14s ease, transform .14s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tile:focus-visible { z-index: 5; outline: 3px solid #f0d38c; outline-offset: 2px; }
+
+    .tile-face {
+      position: relative;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      min-height: 43px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid #e9e1cf;
+      border-bottom: 4px solid #c6b893;
+      border-radius: 7px;
+      color: #344942;
+      background: linear-gradient(145deg, #fffef8 0%, #f5f0e2 76%, #e9e0cb 100%);
+      box-shadow: 2px 4px 0 #183f36a8, 3px 6px 7px #092d2550;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    .tile-face::after {
+      position: absolute;
+      inset: 3px;
+      border: 1px solid rgba(120, 103, 70, .11);
+      border-radius: 4px;
+      content: "";
+      pointer-events: none;
+    }
+
+    .tile-rank {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(19px, 2.4vw, 30px);
+      font-weight: 600;
+      line-height: .96;
+    }
+
+    .tile-suit {
+      margin-top: 3px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(9px, 1vw, 12px);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .tile.flower .tile-rank, .tile.season .tile-rank { font-size: clamp(15px, 2vw, 23px); }
+    .tile.flower .tile-suit, .tile.season .tile-suit { font-size: 9px; letter-spacing: .04em; }
+    .tile.red .tile-rank, .tile.red .tile-suit { color: #b44b3d; }
+    .tile.green .tile-rank, .tile.green .tile-suit { color: #397755; }
+    .tile.blue .tile-rank, .tile.blue .tile-suit { color: #47718a; }
+    .tile.gold .tile-rank, .tile.gold .tile-suit { color: #aa7931; }
+
+    .tile:not(.free) { filter: brightness(.82) saturate(.76); cursor: default; }
+    .tile:not(.free) .tile-face { box-shadow: 1px 2px 0 #183f368e, 2px 4px 6px #092d2545; }
+    .tile.free:hover { transform: translate(calc(var(--level) * 11px), calc(var(--level) * -10px - 4px)); }
+    .tile.selected .tile-face {
+      border-color: #f3d27f;
+      background: linear-gradient(145deg, #fffce9, #f9e6b0);
+      box-shadow: 0 0 0 3px #f1cf78, 2px 5px 0 #183f36a8, 0 0 18px #f5d88188;
+    }
+    .tile.hinted .tile-face { animation: hint-glow .75s ease-in-out 2; }
+    .tile.removing { pointer-events: none; animation: disappear .2s ease forwards; }
+
+    @keyframes hint-glow {
+      50% { box-shadow: 0 0 0 4px #f3d27f, 0 0 24px #f3d27fcc; }
+    }
+    @keyframes disappear {
+      to { opacity: 0; transform: translateY(-15px) scale(.83); }
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 15px;
+    }
+
+    .tools { display: flex; gap: 8px; }
+    .tool-button { min-width: 95px; padding: 0 13px; font-size: 12px; }
+    .tool-icon { color: #9b793e; font-size: 16px; }
+
+    .board-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #728078;
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .note-dot { width: 7px; height: 7px; border-radius: 50%; background: #71977d; }
+
+    .status {
+      min-height: 20px;
+      margin-top: 12px;
+      color: #738077;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .status strong { color: #31594e; font-weight: 600; }
+
+    .overlay {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(8, 39, 33, .64);
+      backdrop-filter: blur(4px);
+    }
+
+    .overlay[hidden] { display: none; }
+
+    .dialog {
+      width: min(390px, 100%);
+      padding: 31px 30px 27px;
+      border: 1px solid #d4bf8f;
+      border-radius: 16px;
+      background: #faf6eb;
+      box-shadow: 0 20px 60px #09292266;
+      text-align: center;
+    }
+
+    .dialog-mark { color: #aa803e; font-size: 29px; }
+    .dialog h2 {
+      margin: 8px 0 7px;
+      color: #1c493f;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 27px;
+      font-weight: 500;
+    }
+    .dialog p { margin: 0 0 20px; color: #6f7c74; font-size: 13px; line-height: 1.55; }
+    .primary-button { min-height: 43px; padding: 0 20px; border-color: var(--green); color: white; background: var(--green); }
+    .primary-button:hover { background: #205f53; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+
+    .site-credit {
+      margin: 12px auto 20px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .site-credit a { color: var(--green); }
+
+    @media (max-width: 760px) {
+      .page { padding: 16px 14px 24px; }
+      .topbar { margin-bottom: 20px; }
+      .brand-name { font-size: 18px; }
+      .brand-mark { width: 38px; height: 38px; }
+      .quiet-button { min-height: 38px; padding: 0 10px; font-size: 12px; }
+      .hero { align-items: start; flex-direction: column; gap: 13px; }
+      .stats { width: 100%; }
+      .stat { flex: 1; min-width: 0; padding: 8px 7px; }
+      .table { padding: 8px; border-radius: 12px; }
+      .felt { min-height: 420px; }
+      .board { inset: 18px 7px; }
+      .tile { width: 100%; margin: 2px; transform: translate(calc(var(--level) * 6px), calc(var(--level) * -6px)); }
+      .tile.free:hover { transform: translate(calc(var(--level) * 7px), calc(var(--level) * -11px)); }
+      .tile-face { border-radius: 5px; border-bottom-width: 3px; }
+      .toolbar { align-items: start; flex-direction: column; }
+      .tools { width: 100%; }
+      .tool-button { flex: 1; min-width: 0; padding: 0 7px; font-size: 11px; }
+      .board-note { text-align: left; }
+    }
+
+    @media (max-width: 420px) {
+      .page { padding-inline: 10px; }
+      .top-actions .quiet-button { padding: 0 8px; }
+      .brand-name { white-space: nowrap; font-size: 16px; }
+      .brand-caption, .top-actions .quiet-button span { display: none; }
+      .table { padding: 5px; }
+      .felt { min-height: 390px; }
+      .board { inset: 14px 5px; }
+      .tile { margin: 1px; }
+      .tile-rank { font-size: 16px; }
+      .tile-suit { font-size: 7px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand" aria-label="Mahjong Garden home">
+        <div class="brand-mark" aria-hidden="true">竹</div>
+        <div>
+          <p class="brand-name">Mahjong Garden</p>
+          <p class="brand-caption">A moment of calm</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="quiet-button" id="help-button" type="button" aria-label="How to play">ⓘ <span>How to play</span></button>
+        <button class="quiet-button" id="new-game" type="button" aria-label="Start a new game">↻ <span>New game</span></button>
+      </div>
+    </header>
+
+    <section aria-labelledby="game-title">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Classic tile solitaire</p>
+          <h1 id="game-title">Find your flow.</h1>
+          <p class="subtitle">A gentler game with 36 pairs to match at your own pace.</p>
+        </div>
+        <div class="stats" aria-label="Game statistics">
+          <div class="stat"><span class="stat-label">Time</span><span class="stat-value" id="timer">00:00</span></div>
+          <div class="stat"><span class="stat-label">Pairs left</span><span class="stat-value" id="pairs">36</span></div>
+          <div class="stat"><span class="stat-label">Score</span><span class="stat-value" id="score">0</span></div>
+        </div>
+      </div>
+
+      <div class="table">
+        <div class="felt" id="felt">
+          <div class="board" id="board" role="group" aria-label="Mahjong tile board"></div>
+          <div class="overlay" id="overlay" hidden>
+            <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-copy">
+              <div class="dialog-mark" id="dialog-mark" aria-hidden="true">❋</div>
+              <h2 id="dialog-title">A little guidance</h2>
+              <p id="dialog-copy">Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons.</p>
+              <button class="primary-button" id="dialog-action" type="button">Got it</button>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="tools" aria-label="Game tools">
+          <button class="tool-button" id="undo" type="button"><span class="tool-icon" aria-hidden="true">↶</span> Undo</button>
+          <button class="tool-button" id="hint" type="button"><span class="tool-icon" aria-hidden="true">✧</span> Hint</button>
+          <button class="tool-button" id="shuffle" type="button"><span class="tool-icon" aria-hidden="true">⤨</span> Shuffle</button>
+          <button class="tool-button" id="pause" type="button"><span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause</button>
+        </div>
+        <div class="board-note"><span class="note-dot" aria-hidden="true"></span><span>Take your time. There’s no rush.</span></div>
+      </div>
+      <div class="status" id="status" role="status" aria-live="polite">Select any tile with an open side to begin.</div>
+    </section>
+  </main>
+
+  <div>
+    <!-- BEGIN AADS AD UNIT 2457713 -->
+
+<div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+          <iframe data-aa='2457713' src='//acceptable.a-ads.com/2457713/?size=Adaptive'
+                            style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+        </div>
+
+<!-- END AADS AD UNIT 2457713 -->
+
+        <footer class="site-credit">
+          By <a href="https://toogreen.ca" target="_blank" rel="noopener noreferrer">toogreen.ca</a>
+        </footer>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const board = document.querySelector("#board");
+      const timerDisplay = document.querySelector("#timer");
+      const pairsDisplay = document.querySelector("#pairs");
+      const scoreDisplay = document.querySelector("#score");
+      const status = document.querySelector("#status");
+      const overlay = document.querySelector("#overlay");
+      const dialogTitle = document.querySelector("#dialog-title");
+      const dialogCopy = document.querySelector("#dialog-copy");
+      const dialogMark = document.querySelector("#dialog-mark");
+      const dialogAction = document.querySelector("#dialog-action");
+
+      const positions = [];
+      for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) positions.push({ row, col, level: 0 });
+      }
+      for (let row = 2; row < 6; row++) {
+        positions.push({ row, col: 3, level: 1 }, { row, col: 4, level: 1 });
+      }
+
+      const faces = [];
+      const suits = [
+        { key: "dots", suit: "筒", color: "blue" },
+        { key: "bamboo", suit: "索", color: "green" },
+        { key: "characters", suit: "萬", color: "red" }
+      ];
+      for (const suit of suits) {
+        for (let rank = 1; rank <= 9; rank++) {
+          for (let copy = 0; copy < 4; copy++) {
+            faces.push({ match: `${suit.key}-${rank}`, rank, suit: suit.suit, color: suit.color, label: `${rank} ${suit.key}` });
+          }
+        }
+      }
+      const honors = [
+        { rank: "東", suit: "WIND", match: "wind-east", color: "red" },
+        { rank: "南", suit: "WIND", match: "wind-south", color: "green" },
+        { rank: "西", suit: "WIND", match: "wind-west", color: "blue" },
+        { rank: "北", suit: "WIND", match: "wind-north", color: "gold" },
+        { rank: "中", suit: "DRAGON", match: "dragon-red", color: "red" },
+        { rank: "發", suit: "DRAGON", match: "dragon-green", color: "green" },
+        { rank: "白", suit: "DRAGON", match: "dragon-white", color: "blue" }
+      ];
+      for (const honor of honors) {
+        for (let copy = 0; copy < 4; copy++) faces.push({ ...honor, label: honor.suit === "WIND" ? `${honor.rank} wind` : `${honor.rank} dragon` });
+      }
+      for (let number = 1; number <= 4; number++) {
+        faces.push({ match: "flower", rank: ["梅", "蘭", "菊", "竹"][number - 1], suit: "FLOWER", color: "gold", label: `flower ${number}` });
+        faces.push({ match: "season", rank: ["春", "夏", "秋", "冬"][number - 1], suit: "SEASON", color: "green", label: `season ${number}` });
+      }
+
+      const tiles = positions.map((position, id) => ({ ...position, id, face: null }));
+      let remaining = new Set();
+      let selected = null;
+      let score = 0;
+      let startedAt = Date.now();
+      let elapsedBeforePause = 0;
+      let timerHandle = null;
+      let paused = false;
+      let undoStack = [];
+      let hintTimeout = null;
+
+      function shuffled(items) {
+        const result = [...items];
+        for (let i = result.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [result[i], result[j]] = [result[j], result[i]];
+        }
+        return result;
+      }
+
+      function newGame() {
+        const faceGroups = new Map();
+        for (const face of faces) {
+          if (!faceGroups.has(face.match)) faceGroups.set(face.match, []);
+          faceGroups.get(face.match).push(face);
+        }
+        const deal = shuffled([...faceGroups.values()].flatMap(group => shuffled(group).slice(0, 2)));
+        if (deal.length !== positions.length) {
+          status.textContent = "The tile set is incomplete. Please refresh to start a new game.";
+          return;
+        }
+        tiles.forEach((tile, index) => { tile.face = deal[index]; });
+        remaining = new Set(tiles.map(tile => tile.id));
+        selected = null;
+        score = 0;
+        undoStack = [];
+        elapsedBeforePause = 0;
+        startedAt = Date.now();
+        paused = false;
+        document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause';
+        closeDialog();
+        status.textContent = "Select any tile with an open side to begin.";
+        render();
+        startTimer();
+      }
+
+      function isFree(tile) {
+        const occupied = id => remaining.has(id);
+        const above = tiles.some(other =>
+          occupied(other.id) && other.level > tile.level &&
+          Math.abs(other.col - tile.col) < 1 && Math.abs(other.row - tile.row) < 1
+        );
+        if (above) return false;
+        const left = tiles.some(other =>
+          occupied(other.id) && other.level === tile.level &&
+          other.row === tile.row && other.col === tile.col - 1
+        );
+        const right = tiles.some(other =>
+          occupied(other.id) && other.level === tile.level &&
+          other.row === tile.row && other.col === tile.col + 1
+        );
+        return !left || !right;
+      }
+
+      function render() {
+        board.replaceChildren();
+        const fragment = document.createDocumentFragment();
+        for (const tile of tiles) {
+          if (!remaining.has(tile.id)) continue;
+          const button = document.createElement("button");
+          const face = tile.face;
+          const free = isFree(tile);
+          button.type = "button";
+          button.className = `tile ${face.color} ${face.match === "flower" ? "flower" : ""} ${face.match === "season" ? "season" : ""} ${free ? "free" : ""} ${selected === tile.id ? "selected" : ""}`;
+          button.style.gridColumn = String(tile.col + 1);
+          button.style.gridRow = String(tile.row + 1);
+          button.style.setProperty("--level", String(tile.level));
+          button.dataset.id = String(tile.id);
+          button.disabled = !free || paused;
+          button.setAttribute("aria-label", `${face.label}${free ? ", open" : ", blocked"}`);
+          button.setAttribute("aria-pressed", String(selected === tile.id));
+          button.innerHTML = `<span class="tile-face"><span class="tile-rank">${face.rank}</span><span class="tile-suit">${face.suit === "WIND" || face.suit === "DRAGON" ? face.suit : face.suit}</span></span>`;
+          button.addEventListener("click", () => chooseTile(tile.id));
+          fragment.append(button);
+        }
+        board.append(fragment);
+        pairsDisplay.textContent = String(Math.ceil(remaining.size / 2));
+        scoreDisplay.textContent = String(score);
+        document.querySelector("#undo").disabled = undoStack.length === 0 || paused;
+        document.querySelector("#hint").disabled = paused || remaining.size === 0;
+        document.querySelector("#shuffle").disabled = paused || remaining.size < 2;
+      }
+
+      function chooseTile(id) {
+        if (paused || !remaining.has(id) || !isFree(tiles[id])) return;
+        if (selected === id) {
+          selected = null;
+          render();
+          return;
+        }
+        if (selected !== null && canMatch(tiles[selected], tiles[id])) {
+          removePair(selected, id);
+          return;
+        }
+        selected = id;
+        status.innerHTML = "<strong>Tile selected.</strong> Choose its matching open pair.";
+        render();
+      }
+
+      function canMatch(first, second) {
+        return first.id !== second.id && first.face.match === second.face.match &&
+          remaining.has(first.id) && remaining.has(second.id) && isFree(first) && isFree(second);
+      }
+
+      function removePair(firstId, secondId) {
+        undoStack.push({
+          remaining: [...remaining],
+          faces: tiles.map(tile => tile.face),
+          score
+        });
+        if (undoStack.length > 30) undoStack.shift();
+        remaining.delete(firstId);
+        remaining.delete(secondId);
+        selected = null;
+        score += 10;
+        status.innerHTML = "<strong>Beautiful match.</strong> Keep the garden growing.";
+        render();
+        if (remaining.size === 0) {
+          stopTimer();
+          dialogTitle.textContent = "Garden in full bloom";
+          dialogCopy.textContent = `Every tile cleared in ${timerDisplay.textContent}. Your final score is ${score}.`;
+          dialogMark.textContent = "✿";
+          dialogAction.textContent = "Play again";
+          dialogAction.onclick = newGame;
+          overlay.hidden = false;
+        } else if (!hasAvailableMove()) {
+          status.innerHTML = "<strong>No open pairs remain.</strong> Shuffle the remaining tiles to continue.";
+        }
+      }
+
+      function hasAvailableMove() {
+        const open = tiles.filter(tile => remaining.has(tile.id) && isFree(tile));
+        for (let i = 0; i < open.length; i++) {
+          for (let j = i + 1; j < open.length; j++) {
+            if (canMatch(open[i], open[j])) return true;
+          }
+        }
+        return false;
+      }
+
+      function saveUndo() {
+        undoStack.push({ remaining: [...remaining], faces: tiles.map(tile => tile.face), score });
+        if (undoStack.length > 30) undoStack.shift();
+      }
+
+      function undo() {
+        if (!undoStack.length || paused) return;
+        const previous = undoStack.pop();
+        remaining = new Set(previous.remaining);
+        tiles.forEach((tile, index) => { tile.face = previous.faces[index]; });
+        score = previous.score;
+        selected = null;
+        status.textContent = "Last move undone.";
+        render();
+      }
+
+      function hint() {
+        if (paused) return;
+        const open = tiles.filter(tile => remaining.has(tile.id) && isFree(tile));
+        const matches = [];
+        for (let i = 0; i < open.length; i++) {
+          for (let j = i + 1; j < open.length; j++) {
+            if (canMatch(open[i], open[j])) matches.push([open[i].id, open[j].id]);
+          }
+        }
+        if (!matches.length) {
+          status.innerHTML = "<strong>No matches available.</strong> Shuffle the remaining tiles to continue.";
+          return;
+        }
+        const [first, second] = matches[Math.floor(Math.random() * matches.length)];
+        selected = null;
+        render();
+        board.querySelector(`[data-id="${first}"]`)?.classList.add("hinted");
+        board.querySelector(`[data-id="${second}"]`)?.classList.add("hinted");
+        status.innerHTML = "<strong>A match is waiting.</strong> Look for the glowing tiles.";
+        clearTimeout(hintTimeout);
+        hintTimeout = setTimeout(() => {
+          board.querySelectorAll(".hinted").forEach(tile => tile.classList.remove("hinted"));
+        }, 1600);
+      }
+
+      function shuffleRemaining() {
+        if (paused || remaining.size < 2) return;
+        saveUndo();
+        const ids = shuffled([...remaining]);
+        const currentFaces = shuffled(ids.map(id => tiles[id].face));
+        ids.forEach((id, index) => { tiles[id].face = currentFaces[index]; });
+        selected = null;
+        render();
+        status.textContent = hasAvailableMove()
+          ? "The remaining tiles have been shuffled."
+          : "No open pairs yet. Shuffle again to find a match.";
+      }
+
+      function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+        const remainder = (seconds % 60).toString().padStart(2, "0");
+        return `${minutes}:${remainder}`;
+      }
+
+      function startTimer() {
+        stopTimer();
+        timerHandle = setInterval(() => {
+          if (!paused && remaining.size) {
+            timerDisplay.textContent = formatTime(elapsedBeforePause + Math.floor((Date.now() - startedAt) / 1000));
+          }
+        }, 250);
+      }
+
+      function stopTimer() {
+        if (timerHandle !== null) clearInterval(timerHandle);
+        timerHandle = null;
+      }
+
+      function togglePause() {
+        if (!remaining.size) return;
+        if (!paused) {
+          elapsedBeforePause += Math.floor((Date.now() - startedAt) / 1000);
+          paused = true;
+          document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">▶</span> Resume';
+          dialogTitle.textContent = "Take a breather";
+          dialogCopy.textContent = "Your board is paused. The timer will pick up where you left off.";
+          dialogMark.textContent = "❋";
+          dialogAction.textContent = "Resume game";
+          dialogAction.onclick = closeDialog;
+          overlay.hidden = false;
+          status.textContent = "Game paused.";
+        } else {
+          paused = false;
+          startedAt = Date.now();
+          document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause';
+          closeDialog();
+          status.textContent = "Welcome back. Your game is ready.";
+        }
+        render();
+      }
+
+      function openHelp() {
+        dialogTitle.textContent = "How to play";
+        dialogCopy.textContent = "Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons. Use a hint, undo, or shuffle whenever you need a hand.";
+        dialogMark.textContent = "❋";
+        dialogAction.textContent = "Got it";
+        dialogAction.onclick = closeDialog;
+        overlay.hidden = false;
+      }
+
+      function closeDialog() {
+        overlay.hidden = true;
+        if (paused) {
+          paused = false;
+          startedAt = Date.now();
+          document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause';
+          status.textContent = "Welcome back. Your game is ready.";
+          render();
+        }
+      }
+
+      document.querySelector("#new-game").addEventListener("click", newGame);
+      document.querySelector("#undo").addEventListener("click", undo);
+      document.querySelector("#hint").addEventListener("click", hint);
+      document.querySelector("#shuffle").addEventListener("click", shuffleRemaining);
+      document.querySelector("#pause").addEventListener("click", togglePause);
+      document.querySelector("#help-button").addEventListener("click", openHelp);
+      dialogAction.addEventListener("click", closeDialog);
+      overlay.addEventListener("click", event => {
+        if (event.target === overlay && !paused) closeDialog();
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !overlay.hidden && !paused) closeDialog();
+      });
+
+      newGame();
+    })();
+  </script>
+</body>
+</html>
