@@ -431,57 +431,58 @@
 <body>
   <main class="page">
     <header class="topbar">
-      <div class="brand" aria-label="Mahjong Garden home">
+      <div class="brand" id="brand" aria-label="Mahjong Garden home">
         <div class="brand-mark" aria-hidden="true">竹</div>
         <div>
           <p class="brand-name">Mahjong Garden</p>
-          <p class="brand-caption">A moment of calm</p>
+          <p class="brand-caption" data-i18n="brandCaption">A moment of calm</p>
         </div>
       </div>
       <div class="top-actions">
-        <button class="quiet-button" id="help-button" type="button" aria-label="How to play">ⓘ <span>How to play</span></button>
-        <button class="quiet-button" id="new-game" type="button" aria-label="Start a new game">↻ <span>New game</span></button>
+        <button class="quiet-button" id="language-toggle" type="button" aria-label="Switch language to French">FR</button>
+        <button class="quiet-button" id="help-button" type="button" aria-label="How to play">ⓘ <span data-i18n="helpButton">How to play</span></button>
+        <button class="quiet-button" id="new-game" type="button" aria-label="Start a new game">↻ <span data-i18n="newGame">New game</span></button>
       </div>
     </header>
 
     <section aria-labelledby="game-title">
       <div class="hero">
         <div>
-          <p class="eyebrow">Classic tile solitaire</p>
-          <h1 id="game-title">Find your flow.</h1>
-          <p class="subtitle">A gentler game with 36 pairs to match at your own pace.</p>
+          <p class="eyebrow" data-i18n="eyebrow">Classic tile solitaire</p>
+          <h1 id="game-title" data-i18n="headline">Find your flow.</h1>
+          <p class="subtitle" data-i18n="subtitle">A gentler game with 36 pairs to match at your own pace.</p>
         </div>
-        <div class="stats" aria-label="Game statistics">
-          <div class="stat"><span class="stat-label">Time</span><span class="stat-value" id="timer">00:00</span></div>
-          <div class="stat"><span class="stat-label">Pairs left</span><span class="stat-value" id="pairs">36</span></div>
-          <div class="stat"><span class="stat-label">Score</span><span class="stat-value" id="score">0</span></div>
+        <div class="stats" aria-label="Game statistics" data-i18n-aria="statsLabel">
+          <div class="stat"><span class="stat-label" data-i18n="timeLabel">Time</span><span class="stat-value" id="timer">00:00</span></div>
+          <div class="stat"><span class="stat-label" data-i18n="pairsLabel">Pairs left</span><span class="stat-value" id="pairs">36</span></div>
+          <div class="stat"><span class="stat-label" data-i18n="scoreLabel">Score</span><span class="stat-value" id="score">0</span></div>
         </div>
       </div>
 
       <div class="table">
         <div class="felt" id="felt">
-          <div class="board" id="board" role="group" aria-label="Mahjong tile board"></div>
+          <div class="board" id="board" role="group" aria-label="Mahjong tile board" data-i18n-aria="boardLabel"></div>
           <div class="overlay" id="overlay" hidden>
             <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-copy">
               <div class="dialog-mark" id="dialog-mark" aria-hidden="true">❋</div>
-              <h2 id="dialog-title">A little guidance</h2>
-              <p id="dialog-copy">Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons.</p>
-              <button class="primary-button" id="dialog-action" type="button">Got it</button>
+              <h2 id="dialog-title" data-i18n="helpTitle">A little guidance</h2>
+              <p id="dialog-copy" data-i18n="helpCopy">Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons.</p>
+              <button class="primary-button" id="dialog-action" type="button" data-i18n="gotIt">Got it</button>
             </section>
           </div>
         </div>
       </div>
 
       <div class="toolbar">
-        <div class="tools" aria-label="Game tools">
-          <button class="tool-button" id="undo" type="button"><span class="tool-icon" aria-hidden="true">↶</span> Undo</button>
-          <button class="tool-button" id="hint" type="button"><span class="tool-icon" aria-hidden="true">✧</span> Hint</button>
-          <button class="tool-button" id="shuffle" type="button"><span class="tool-icon" aria-hidden="true">⤨</span> Shuffle</button>
-          <button class="tool-button" id="pause" type="button"><span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause</button>
+        <div class="tools" aria-label="Game tools" data-i18n-aria="toolsLabel">
+          <button class="tool-button" id="undo" type="button"><span class="tool-icon" aria-hidden="true">↶</span> <span data-i18n="undo">Undo</span></button>
+          <button class="tool-button" id="hint" type="button"><span class="tool-icon" aria-hidden="true">✧</span> <span data-i18n="hint">Hint</span></button>
+          <button class="tool-button" id="shuffle" type="button"><span class="tool-icon" aria-hidden="true">⤨</span> <span data-i18n="shuffle">Shuffle</span></button>
+          <button class="tool-button" id="pause" type="button"><span class="tool-icon" aria-hidden="true">Ⅱ</span> <span data-i18n="pause">Pause</span></button>
         </div>
-        <div class="board-note"><span class="note-dot" aria-hidden="true"></span><span>Take your time. There’s no rush.</span></div>
+        <div class="board-note"><span class="note-dot" aria-hidden="true"></span><span data-i18n="boardNote">Take your time. There’s no rush.</span></div>
       </div>
-      <div class="status" id="status" role="status" aria-live="polite">Select any tile with an open side to begin.</div>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
     </section>
   </main>
 
@@ -496,7 +497,7 @@
 <!-- END AADS AD UNIT 2457713 -->
 
         <footer class="site-credit">
-          By <a href="https://toogreen.ca" target="_blank" rel="noopener noreferrer">toogreen.ca</a>
+          <span data-i18n="by">By</span> <a href="https://toogreen.ca" target="_blank" rel="noopener noreferrer">toogreen.ca</a>
         </footer>
   </div>
 
@@ -514,6 +515,222 @@
       const dialogCopy = document.querySelector("#dialog-copy");
       const dialogMark = document.querySelector("#dialog-mark");
       const dialogAction = document.querySelector("#dialog-action");
+      const languageToggle = document.querySelector("#language-toggle");
+      const translations = {
+        en: {
+          pageTitle: "Mahjong Garden — Tile Solitaire",
+          brandHome: "Mahjong Garden home",
+          brandCaption: "A moment of calm",
+          helpButton: "How to play",
+          newGameButton: "Start a new game",
+          newGame: "New game",
+          languageButton: "Switch language to French",
+          languageCode: "FR",
+          eyebrow: "Classic tile solitaire",
+          headline: "Find your flow.",
+          subtitle: "A gentler game with 36 pairs to match at your own pace.",
+          statsLabel: "Game statistics",
+          timeLabel: "Time",
+          pairsLabel: "Pairs left",
+          scoreLabel: "Score",
+          boardLabel: "Mahjong tile board",
+          helpTitle: "A little guidance",
+          helpCopy: "Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons.",
+          gotIt: "Got it",
+          toolsLabel: "Game tools",
+          undo: "Undo",
+          hint: "Hint",
+          shuffle: "Shuffle",
+          pause: "Pause",
+          resume: "Resume",
+          boardNote: "Take your time. There’s no rush.",
+          by: "By",
+          dots: "dots",
+          bamboo: "bamboo",
+          characters: "characters",
+          dotsSingular: "dot",
+          bambooSingular: "bamboo",
+          charactersSingular: "character",
+          flower: "flower",
+          season: "season",
+          windEast: "east wind",
+          windSouth: "south wind",
+          windWest: "west wind",
+          windNorth: "north wind",
+          dragonRed: "red dragon",
+          dragonGreen: "green dragon",
+          dragonWhite: "white dragon",
+          windSuit: "WIND",
+          dragonSuit: "DRAGON",
+          flowerSuit: "FLOWER",
+          seasonSuit: "SEASON",
+          tileOpen: "open",
+          tileBlocked: "blocked",
+          status: {
+            incomplete: ["", "The tile set is incomplete. Please refresh to start a new game."],
+            ready: ["", "Select any tile with an open side to begin."],
+            selected: ["Tile selected.", " Choose its matching open pair."],
+            matched: ["Beautiful match.", " Keep the garden growing."],
+            noOpenPairs: ["No open pairs remain.", " Shuffle the remaining tiles to continue."],
+            undone: ["", "Last move undone."],
+            noMatches: ["No matches available.", " Shuffle the remaining tiles to continue."],
+            hint: ["A match is waiting.", " Look for the glowing tiles."],
+            shuffled: ["", "The remaining tiles have been shuffled."],
+            noOpenYet: ["", "No open pairs yet. Shuffle again to find a match."],
+            paused: ["", "Game paused."],
+            welcome: ["", "Welcome back. Your game is ready."]
+          },
+          pauseTitle: "Take a breather",
+          pauseCopy: "Your board is paused. The timer will pick up where you left off.",
+          resumeGame: "Resume game",
+          completeTitle: "Garden in full bloom",
+          completeCopy: "Every tile cleared in {time}. Your final score is {score}.",
+          playAgain: "Play again",
+          helpLongCopy: "Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons. Use a hint, undo, or shuffle whenever you need a hand."
+        },
+        fr: {
+          pageTitle: "Jardin de Mahjong — Solitaire",
+          brandHome: "Accueil du Jardin de Mahjong",
+          brandCaption: "Un instant de calme",
+          helpButton: "Règles du jeu",
+          newGameButton: "Nouvelle partie",
+          newGame: "Nouvelle partie",
+          languageButton: "Passer en anglais",
+          languageCode: "EN",
+          eyebrow: "Mahjong solitaire classique",
+          headline: "Trouvez votre rythme.",
+          subtitle: "Un jeu tout en douceur : 36 paires à associer à votre rythme.",
+          statsLabel: "Statistiques de la partie",
+          timeLabel: "Temps",
+          pairsLabel: "Paires restantes",
+          scoreLabel: "Score",
+          boardLabel: "Plateau de mahjong",
+          helpTitle: "Quelques conseils",
+          helpCopy: "Associez deux tuiles identiques dont un côté (gauche ou droite) est libre et qui ne sont pas recouvertes par une autre tuile. Les fleurs s’associent entre elles, ainsi que les saisons.",
+          gotIt: "Compris",
+          toolsLabel: "Outils de jeu",
+          undo: "Annuler",
+          hint: "Indice",
+          shuffle: "Mélanger",
+          pause: "Pause",
+          resume: "Reprendre",
+          boardNote: "Prenez votre temps. Rien ne presse.",
+          by: "Par",
+          dots: "cercles",
+          bamboo: "bambous",
+          characters: "caractères",
+          dotsSingular: "cercle",
+          bambooSingular: "bambou",
+          charactersSingular: "caractère",
+          flower: "fleur",
+          season: "saison",
+          windEast: "vent d’est",
+          windSouth: "vent du sud",
+          windWest: "vent d’ouest",
+          windNorth: "vent du nord",
+          dragonRed: "dragon rouge",
+          dragonGreen: "dragon vert",
+          dragonWhite: "dragon blanc",
+          windSuit: "VENT",
+          dragonSuit: "DRAGON",
+          flowerSuit: "FLEUR",
+          seasonSuit: "SAISON",
+          tileOpen: "libre",
+          tileBlocked: "bloquée",
+          status: {
+            incomplete: ["", "Le jeu de tuiles est incomplet. Actualisez la page pour commencer une nouvelle partie."],
+            ready: ["", "Sélectionnez une tuile libre à gauche ou à droite pour commencer."],
+            selected: ["Tuile sélectionnée.", " Choisissez la tuile identique qui est libre."],
+            matched: ["Belle paire !", " Le jardin s’épanouit."],
+            noOpenPairs: ["Aucune paire libre.", " Mélangez les tuiles restantes pour continuer."],
+            undone: ["", "Dernier coup annulé."],
+            noMatches: ["Aucune paire disponible.", " Mélangez les tuiles restantes pour continuer."],
+            hint: ["Une paire vous attend.", " Repérez les tuiles lumineuses."],
+            shuffled: ["", "Les tuiles restantes ont été mélangées."],
+            noOpenYet: ["", "Aucune paire libre pour l’instant. Mélangez à nouveau pour en trouver une."],
+            paused: ["", "Partie en pause."],
+            welcome: ["", "Bon retour ! La partie peut reprendre."]
+          },
+          pauseTitle: "Faites une pause",
+          pauseCopy: "La partie est en pause. Le chronomètre reprendra là où vous en étiez.",
+          resumeGame: "Reprendre la partie",
+          completeTitle: "Le jardin est en pleine floraison",
+          completeCopy: "Toutes les tuiles ont été retirées en {time}. Votre score final est de {score}.",
+          playAgain: "Rejouer",
+          helpLongCopy: "Associez deux tuiles identiques dont un côté (gauche ou droite) est libre et qui ne sont pas recouvertes par une autre tuile. Les fleurs s’associent entre elles, ainsi que les saisons. Utilisez un indice, annulez un coup ou mélangez les tuiles au besoin."
+        }
+      };
+      let language = "en";
+      let statusKey = "ready";
+      let dialogMode = null;
+
+      function translate(key) {
+        return translations[language][key];
+      }
+
+      function setStatus(key) {
+        statusKey = key;
+        const [emphasis, message] = translations[language].status[key];
+        status.replaceChildren();
+        if (emphasis) {
+          const strong = document.createElement("strong");
+          strong.textContent = emphasis;
+          status.append(strong);
+        }
+        status.append(document.createTextNode(message));
+      }
+
+      function updatePauseButton() {
+        const icon = paused ? "▶" : "Ⅱ";
+        const label = paused ? translate("resume") : translate("pause");
+        document.querySelector("#pause").innerHTML = `<span class="tool-icon" aria-hidden="true">${icon}</span> ${label}`;
+      }
+
+      function renderDialog() {
+        if (dialogMode === "help") {
+          dialogTitle.textContent = translate("helpTitle");
+          dialogCopy.textContent = translate("helpLongCopy");
+          dialogMark.textContent = "❋";
+          dialogAction.textContent = translate("gotIt");
+        } else if (dialogMode === "pause") {
+          dialogTitle.textContent = translate("pauseTitle");
+          dialogCopy.textContent = translate("pauseCopy");
+          dialogMark.textContent = "❋";
+          dialogAction.textContent = translate("resumeGame");
+        } else if (dialogMode === "complete") {
+          dialogTitle.textContent = translate("completeTitle");
+          dialogCopy.textContent = translate("completeCopy")
+            .replace("{time}", timerDisplay.textContent)
+            .replace("{score}", String(score));
+          dialogMark.textContent = "✿";
+          dialogAction.textContent = translate("playAgain");
+        }
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = language;
+        document.title = translate("pageTitle");
+        document.querySelectorAll("[data-i18n]").forEach(element => {
+          element.textContent = translate(element.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+          element.setAttribute("aria-label", translate(element.dataset.i18nAria));
+        });
+        document.querySelector("#brand").setAttribute("aria-label", translate("brandHome"));
+        document.querySelector("#help-button").setAttribute("aria-label", translate("helpButton"));
+        document.querySelector("#new-game").setAttribute("aria-label", translate("newGameButton"));
+        languageToggle.textContent = translate("languageCode");
+        languageToggle.setAttribute("aria-label", translate("languageButton"));
+        render();
+        setStatus(statusKey);
+        if (dialogMode) renderDialog();
+        updatePauseButton();
+      }
+
+      languageToggle.addEventListener("click", () => {
+        language = language === "en" ? "fr" : "en";
+        applyLanguage();
+      });
 
       const positions = [];
       for (let row = 0; row < 8; row++) {
@@ -549,8 +766,8 @@
         for (let copy = 0; copy < 4; copy++) faces.push({ ...honor, label: honor.suit === "WIND" ? `${honor.rank} wind` : `${honor.rank} dragon` });
       }
       for (let number = 1; number <= 4; number++) {
-        faces.push({ match: "flower", rank: ["梅", "蘭", "菊", "竹"][number - 1], suit: "FLOWER", color: "gold", label: `flower ${number}` });
-        faces.push({ match: "season", rank: ["春", "夏", "秋", "冬"][number - 1], suit: "SEASON", color: "green", label: `season ${number}` });
+        faces.push({ match: "flower", rank: ["梅", "蘭", "菊", "竹"][number - 1], suit: "FLOWER", color: "gold", label: `flower ${number}`, labelNumber: number });
+        faces.push({ match: "season", rank: ["春", "夏", "秋", "冬"][number - 1], suit: "SEASON", color: "green", label: `season ${number}`, labelNumber: number });
       }
 
       const tiles = positions.map((position, id) => ({ ...position, id, face: null }));
@@ -575,6 +792,25 @@
         return result;
       }
 
+      function getTileLabel(face) {
+        if (face.match === "flower" || face.match === "season") {
+          return `${translate(face.match)} ${face.labelNumber}`;
+        }
+        const honorLabels = {
+          "wind-east": "windEast",
+          "wind-south": "windSouth",
+          "wind-west": "windWest",
+          "wind-north": "windNorth",
+          "dragon-red": "dragonRed",
+          "dragon-green": "dragonGreen",
+          "dragon-white": "dragonWhite"
+        };
+        if (honorLabels[face.match]) return translate(honorLabels[face.match]);
+        const [kind, rank] = face.match.split("-");
+        const labelKind = rank === "1" ? `${kind}Singular` : kind;
+        return `${rank} ${translate(labelKind)}`;
+      }
+
       function newGame() {
         const faceGroups = new Map();
         for (const face of faces) {
@@ -583,7 +819,7 @@
         }
         const deal = shuffled([...faceGroups.values()].flatMap(group => shuffled(group).slice(0, 2)));
         if (deal.length !== positions.length) {
-          status.textContent = "The tile set is incomplete. Please refresh to start a new game.";
+          setStatus("incomplete");
           return;
         }
         tiles.forEach((tile, index) => { tile.face = deal[index]; });
@@ -594,9 +830,9 @@
         elapsedBeforePause = 0;
         startedAt = Date.now();
         paused = false;
-        document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause';
+        updatePauseButton();
         closeDialog();
-        status.textContent = "Select any tile with an open side to begin.";
+        setStatus("ready");
         render();
         startTimer();
       }
@@ -634,9 +870,11 @@
           button.style.setProperty("--level", String(tile.level));
           button.dataset.id = String(tile.id);
           button.disabled = !free || paused;
-          button.setAttribute("aria-label", `${face.label}${free ? ", open" : ", blocked"}`);
+          button.setAttribute("aria-label", `${getTileLabel(face)}, ${translate(free ? "tileOpen" : "tileBlocked")}`);
           button.setAttribute("aria-pressed", String(selected === tile.id));
-          button.innerHTML = `<span class="tile-face"><span class="tile-rank">${face.rank}</span><span class="tile-suit">${face.suit === "WIND" || face.suit === "DRAGON" ? face.suit : face.suit}</span></span>`;
+          const suitKey = { WIND: "windSuit", DRAGON: "dragonSuit", FLOWER: "flowerSuit", SEASON: "seasonSuit" }[face.suit];
+          const suitLabel = suitKey ? translate(suitKey) : face.suit;
+          button.innerHTML = `<span class="tile-face"><span class="tile-rank">${face.rank}</span><span class="tile-suit">${suitLabel}</span></span>`;
           button.addEventListener("click", () => chooseTile(tile.id));
           fragment.append(button);
         }
@@ -660,7 +898,7 @@
           return;
         }
         selected = id;
-        status.innerHTML = "<strong>Tile selected.</strong> Choose its matching open pair.";
+        setStatus("selected");
         render();
       }
 
@@ -736,18 +974,16 @@
         remaining.delete(secondId);
         selected = null;
         score += 10;
-        status.innerHTML = "<strong>Beautiful match.</strong> Keep the garden growing.";
+        setStatus("matched");
         render();
         if (remaining.size === 0) {
           stopTimer();
-          dialogTitle.textContent = "Garden in full bloom";
-          dialogCopy.textContent = `Every tile cleared in ${timerDisplay.textContent}. Your final score is ${score}.`;
-          dialogMark.textContent = "✿";
-          dialogAction.textContent = "Play again";
+          dialogMode = "complete";
+          renderDialog();
           dialogAction.onclick = newGame;
           overlay.hidden = false;
         } else if (!hasAvailableMove()) {
-          status.innerHTML = "<strong>No open pairs remain.</strong> Shuffle the remaining tiles to continue.";
+          setStatus("noOpenPairs");
         }
       }
 
@@ -773,7 +1009,7 @@
         tiles.forEach((tile, index) => { tile.face = previous.faces[index]; });
         score = previous.score;
         selected = null;
-        status.textContent = "Last move undone.";
+        setStatus("undone");
         render();
       }
 
@@ -787,7 +1023,7 @@
           }
         }
         if (!matches.length) {
-          status.innerHTML = "<strong>No matches available.</strong> Shuffle the remaining tiles to continue.";
+          setStatus("noMatches");
           return;
         }
         const [first, second] = matches[Math.floor(Math.random() * matches.length)];
@@ -795,7 +1031,7 @@
         render();
         board.querySelector(`[data-id="${first}"]`)?.classList.add("hinted");
         board.querySelector(`[data-id="${second}"]`)?.classList.add("hinted");
-        status.innerHTML = "<strong>A match is waiting.</strong> Look for the glowing tiles.";
+        setStatus("hint");
         clearTimeout(hintTimeout);
         hintTimeout = setTimeout(() => {
           board.querySelectorAll(".hinted").forEach(tile => tile.classList.remove("hinted"));
@@ -810,9 +1046,7 @@
         ids.forEach((id, index) => { tiles[id].face = currentFaces[index]; });
         selected = null;
         render();
-        status.textContent = hasAvailableMove()
-          ? "The remaining tiles have been shuffled."
-          : "No open pairs yet. Shuffle again to find a match.";
+        setStatus(hasAvailableMove() ? "shuffled" : "noOpenYet");
       }
 
       function formatTime(seconds) {
@@ -840,40 +1074,37 @@
         if (!paused) {
           elapsedBeforePause += Math.floor((Date.now() - startedAt) / 1000);
           paused = true;
-          document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">▶</span> Resume';
-          dialogTitle.textContent = "Take a breather";
-          dialogCopy.textContent = "Your board is paused. The timer will pick up where you left off.";
-          dialogMark.textContent = "❋";
-          dialogAction.textContent = "Resume game";
+          updatePauseButton();
+          dialogMode = "pause";
+          renderDialog();
           dialogAction.onclick = closeDialog;
           overlay.hidden = false;
-          status.textContent = "Game paused.";
+          setStatus("paused");
         } else {
           paused = false;
           startedAt = Date.now();
-          document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause';
+          updatePauseButton();
           closeDialog();
-          status.textContent = "Welcome back. Your game is ready.";
+          setStatus("welcome");
         }
         render();
       }
 
       function openHelp() {
-        dialogTitle.textContent = "How to play";
-        dialogCopy.textContent = "Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons. Use a hint, undo, or shuffle whenever you need a hand.";
-        dialogMark.textContent = "❋";
-        dialogAction.textContent = "Got it";
+        dialogMode = "help";
+        renderDialog();
         dialogAction.onclick = closeDialog;
         overlay.hidden = false;
       }
 
       function closeDialog() {
         overlay.hidden = true;
+        dialogMode = null;
         if (paused) {
           paused = false;
           startedAt = Date.now();
-          document.querySelector("#pause").innerHTML = '<span class="tool-icon" aria-hidden="true">Ⅱ</span> Pause';
-          status.textContent = "Welcome back. Your game is ready.";
+          updatePauseButton();
+          setStatus("welcome");
           render();
         }
       }
