@@ -563,6 +563,8 @@
       let paused = false;
       let undoStack = [];
       let hintTimeout = null;
+      let audioContext = null;
+      let impactNoise = null;
 
       function shuffled(items) {
         const result = [...items];
@@ -667,7 +669,63 @@
           remaining.has(first.id) && remaining.has(second.id) && isFree(first) && isFree(second);
       }
 
+      function playMatchSound() {
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextConstructor) return;
+
+        audioContext ??= new AudioContextConstructor();
+        if (audioContext.state === "suspended") audioContext.resume();
+
+        if (!impactNoise) {
+          impactNoise = audioContext.createBuffer(1, Math.ceil(audioContext.sampleRate * 0.04), audioContext.sampleRate);
+          const noiseSamples = impactNoise.getChannelData(0);
+          for (let i = 0; i < noiseSamples.length; i++) noiseSamples[i] = Math.random() * 2 - 1;
+        }
+
+        function playTap(startTime, pitch, volume) {
+          const partials = [
+            [520, 0.14, 0.15],
+            [930, 0.08, 0.12],
+            [1510, 0.045, 0.09],
+            [2380, 0.025, 0.065]
+          ];
+          for (const [frequency, level, decay] of partials) {
+            const tone = audioContext.createOscillator();
+            const envelope = audioContext.createGain();
+            tone.type = "sine";
+            tone.frequency.setValueAtTime(frequency * pitch, startTime);
+            envelope.gain.setValueAtTime(0.0001, startTime);
+            envelope.gain.exponentialRampToValueAtTime(level * volume, startTime + 0.002);
+            envelope.gain.exponentialRampToValueAtTime(0.0001, startTime + decay);
+            tone.connect(envelope);
+            envelope.connect(audioContext.destination);
+            tone.start(startTime);
+            tone.stop(startTime + decay + 0.01);
+          }
+
+          const impact = audioContext.createBufferSource();
+          const filter = audioContext.createBiquadFilter();
+          const envelope = audioContext.createGain();
+          impact.buffer = impactNoise;
+          filter.type = "bandpass";
+          filter.frequency.setValueAtTime(2100, startTime);
+          filter.Q.setValueAtTime(0.8, startTime);
+          envelope.gain.setValueAtTime(0.0001, startTime);
+          envelope.gain.exponentialRampToValueAtTime(0.055 * volume, startTime + 0.001);
+          envelope.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.035);
+          impact.connect(filter);
+          filter.connect(envelope);
+          envelope.connect(audioContext.destination);
+          impact.start(startTime);
+        }
+
+        const now = audioContext.currentTime;
+        playTap(now, 1, 1);
+        playTap(now + 0.065, 0.86, 0.78);
+      }
+
       function removePair(firstId, secondId) {
+        playMatchSound();
         undoStack.push({
           remaining: [...remaining],
           faces: tiles.map(tile => tile.face),
