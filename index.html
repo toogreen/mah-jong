@@ -4,6 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#123c39">
+  <meta name="description" content="A calm, classic mahjong tile solitaire. Match free pairs and clear the board.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mahjong Garden">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <title>Mahjong Garden — Tile Solitaire</title>
   <style>
     :root {
@@ -99,6 +107,7 @@
     }
 
     .quiet-button { padding: 0 15px; font-size: 13px; }
+    .quiet-button[hidden] { display: none; }
     .quiet-button:hover, .tool-button:hover { border-color: #b8ad91; background: #fffdf7; }
     button:active { transform: translateY(1px); }
     button:focus-visible { outline: 3px solid #e0b961; outline-offset: 3px; }
@@ -439,6 +448,7 @@
         </div>
       </div>
       <div class="top-actions">
+        <button class="quiet-button" id="install-button" type="button" aria-label="Install app" hidden>⤓ <span data-i18n="install">Install</span></button>
         <button class="quiet-button" id="language-toggle" type="button" aria-label="Switch language to French">FR</button>
         <button class="quiet-button" id="help-button" type="button" aria-label="How to play">ⓘ <span data-i18n="helpButton">How to play</span></button>
         <button class="quiet-button" id="new-game" type="button" aria-label="Start a new game">↻ <span data-i18n="newGame">New game</span></button>
@@ -516,6 +526,7 @@
       const dialogMark = document.querySelector("#dialog-mark");
       const dialogAction = document.querySelector("#dialog-action");
       const languageToggle = document.querySelector("#language-toggle");
+      const installButton = document.querySelector("#install-button");
       const translations = {
         en: {
           pageTitle: "Mahjong Garden — Tile Solitaire",
@@ -526,6 +537,8 @@
           newGame: "New game",
           languageButton: "Switch language to French",
           languageCode: "FR",
+          install: "Install",
+          installButton: "Install app",
           eyebrow: "Classic tile solitaire",
           headline: "Find your flow.",
           subtitle: "A gentler game with 36 pairs to match at your own pace.",
@@ -597,6 +610,8 @@
           newGame: "Nouvelle partie",
           languageButton: "Passer en anglais",
           languageCode: "EN",
+          install: "Installer",
+          installButton: "Installer l’application",
           eyebrow: "Mahjong solitaire classique",
           headline: "Trouvez votre rythme.",
           subtitle: "Un jeu tout en douceur : 36 paires à associer à votre rythme.",
@@ -719,6 +734,7 @@
         document.querySelector("#brand").setAttribute("aria-label", translate("brandHome"));
         document.querySelector("#help-button").setAttribute("aria-label", translate("helpButton"));
         document.querySelector("#new-game").setAttribute("aria-label", translate("newGameButton"));
+        installButton.setAttribute("aria-label", translate("installButton"));
         languageToggle.textContent = translate("languageCode");
         languageToggle.setAttribute("aria-label", translate("languageButton"));
         render();
@@ -1122,6 +1138,30 @@
       document.addEventListener("keydown", event => {
         if (event.key === "Escape" && !overlay.hidden && !paused) closeDialog();
       });
+
+      let installPrompt = null;
+      window.addEventListener("beforeinstallprompt", event => {
+        event.preventDefault();
+        installPrompt = event;
+        installButton.hidden = false;
+      });
+      window.addEventListener("appinstalled", () => {
+        installPrompt = null;
+        installButton.hidden = true;
+      });
+      installButton.addEventListener("click", async () => {
+        if (!installPrompt) return;
+        installButton.hidden = true;
+        installPrompt.prompt();
+        await installPrompt.userChoice;
+        installPrompt = null;
+      });
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(() => {});
+        });
+      }
 
       newGame();
     })();
