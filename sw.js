@@ -1,8 +1,9 @@
 // Bump CACHE_VERSION whenever the app shell changes so clients pick up the update.
-const CACHE_VERSION = "mahjong-garden-v2";
+const CACHE_VERSION = "mahjong-garden-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./privacy.html",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -40,11 +41,11 @@ self.addEventListener("fetch", event => {
         .then(response => {
           if (response.ok) {
             const copy = response.clone();
-            caches.open(CACHE_VERSION).then(cache => cache.put("./index.html", copy));
+            caches.open(CACHE_VERSION).then(cache => cache.put(request, copy));
           }
           return response;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => caches.match(request, { ignoreSearch: true }).then(cached => cached || caches.match("./index.html")))
     );
     return;
   }

@@ -2,15 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C1BHQTX017"></script>
+  <meta name="google-adsense-account" content="ca-pub-5829964164858117">
   <script>
+    // Quebec's Law 25: ad cookies, personalised ads and Google Analytics stay off until the player
+    // accepts them. Google Consent Mode tells AdSense what was chosen; the consent banner updates it.
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-C1BHQTX017');
+    // Google Analytics (G-C1BHQTX017) is only fetched once the player has accepted
+    function loadAnalytics() {
+      if (loadAnalytics.done) return;
+      loadAnalytics.done = true;
+      gtag('js', new Date());
+      gtag('config', 'G-C1BHQTX017');
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-C1BHQTX017';
+      document.head.appendChild(s);
+    }
+    (function () {
+      var ok = false;
+      try { ok = localStorage.getItem('mahjong-consent') === 'granted'; } catch (e) { }
+      var v = ok ? 'granted' : 'denied';
+      gtag('consent', 'default', { ad_storage: v, ad_user_data: v, ad_personalization: v, analytics_storage: v });
+      if (ok) loadAnalytics();
+      else (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = 1;
+    })();
   </script>
+  <!-- Google AdSense (Auto Ads) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5829964164858117" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#123c39">
   <meta name="description" content="A calm, classic mahjong tile solitaire. Match free pairs and clear the board.">
@@ -410,6 +429,32 @@
     }
 
     .site-credit a { color: var(--green); }
+    .legal { margin-top: 6px; }
+    .legal button { padding: 0; border: 0; color: var(--muted); background: none; font: inherit; text-decoration: underline; cursor: pointer; }
+    .legal a { color: var(--muted); }
+
+    /* Cookie consent: Accept and Refuse are given equal weight, as Law 25 expects a free choice */
+    .consent {
+      position: fixed;
+      left: 50%;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 100000;
+      width: min(560px, calc(100vw - 24px));
+      padding: 16px 18px;
+      border: 1px solid #d8d4c8;
+      border-radius: 16px;
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 18px 55px rgba(18, 60, 57, .25);
+      font-size: 13px;
+      line-height: 1.5;
+      transform: translateX(-50%);
+    }
+    .consent[hidden] { display: none; }
+    .consent p { margin: 0 0 12px; }
+    .consent a { color: var(--green); }
+    .consent-buttons { display: flex; gap: 10px; }
+    .consent-buttons .primary-button { flex: 1; min-height: 40px; }
 
     @media (max-width: 760px) {
       .page { padding: 16px 14px 24px; }
@@ -517,7 +562,19 @@
 
         <footer class="site-credit">
           <span data-i18n="by">By</span> <a href="https://toogreen.ca" target="_blank" rel="noopener noreferrer">toogreen.ca</a>
+          <div class="legal">
+            <a id="privacy-link" href="privacy.html#en" data-i18n="privacy">Privacy policy</a> •
+            <button id="consent-open" type="button" data-i18n="cookieSettings">Cookie settings</button>
+          </div>
         </footer>
+  </div>
+
+  <div class="consent" id="consent" role="dialog" aria-live="polite" aria-labelledby="consent-message" hidden>
+    <p id="consent-message"><span data-i18n="consentText">This free game is funded by ads. With your OK, Google can use cookies to show you personalised ads and to measure visits with Google Analytics. If you refuse, you will still see ads, just not personalised ones, and your visit is not measured.</span> <a id="consent-more" href="privacy.html#en" data-i18n="consentMore">Learn more</a></p>
+    <div class="consent-buttons">
+      <button class="primary-button" id="consent-no" type="button" data-i18n="consentNo">Refuse</button>
+      <button class="primary-button" id="consent-yes" type="button" data-i18n="consentYes">Accept</button>
+    </div>
   </div>
 
   <script>
@@ -608,7 +665,13 @@
           completeTitle: "Garden in full bloom",
           completeCopy: "Every tile cleared in {time}. Your final score is {score}.",
           playAgain: "Play again",
-          helpLongCopy: "Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons. Use a hint, undo, or shuffle whenever you need a hand."
+          helpLongCopy: "Match two identical tiles that are open on the left or right and not covered by another tile. Flowers match flowers, and seasons match seasons. Use a hint, undo, or shuffle whenever you need a hand.",
+          privacy: "Privacy policy",
+          cookieSettings: "Cookie settings",
+          consentText: "This free game is funded by ads. With your OK, Google can use cookies to show you personalised ads and to measure visits with Google Analytics. If you refuse, you will still see ads, just not personalised ones, and your visit is not measured.",
+          consentMore: "Learn more",
+          consentYes: "Accept",
+          consentNo: "Refuse"
         },
         fr: {
           pageTitle: "Jardin de Mahjong — Solitaire",
@@ -681,7 +744,13 @@
           completeTitle: "Le jardin est en pleine floraison",
           completeCopy: "Toutes les tuiles ont été retirées en {time}. Votre score final est de {score}.",
           playAgain: "Rejouer",
-          helpLongCopy: "Associez deux tuiles identiques dont un côté (gauche ou droite) est libre et qui ne sont pas recouvertes par une autre tuile. Les fleurs s’associent entre elles, ainsi que les saisons. Utilisez un indice, annulez un coup ou mélangez les tuiles au besoin."
+          helpLongCopy: "Associez deux tuiles identiques dont un côté (gauche ou droite) est libre et qui ne sont pas recouvertes par une autre tuile. Les fleurs s’associent entre elles, ainsi que les saisons. Utilisez un indice, annulez un coup ou mélangez les tuiles au besoin.",
+          privacy: "Politique de confidentialité",
+          cookieSettings: "Paramètres des témoins",
+          consentText: "Ce jeu gratuit est financé par la publicité. Avec votre accord, Google peut utiliser des témoins (cookies) pour vous montrer des annonces personnalisées et pour mesurer les visites avec Google Analytics. Si vous refusez, vous verrez quand même des annonces, mais non personnalisées, et votre visite ne sera pas mesurée.",
+          consentMore: "En savoir plus",
+          consentYes: "Accepter",
+          consentNo: "Refuser"
         }
       };
       let language = "en";
@@ -744,6 +813,9 @@
         document.querySelector("#help-button").setAttribute("aria-label", translate("helpButton"));
         document.querySelector("#new-game").setAttribute("aria-label", translate("newGameButton"));
         installButton.setAttribute("aria-label", translate("installButton"));
+        // the privacy page opens in the same language as the game
+        document.querySelector("#privacy-link").href = `privacy.html#${language}`;
+        document.querySelector("#consent-more").href = `privacy.html#${language}`;
         languageToggle.textContent = translate("languageCode");
         languageToggle.setAttribute("aria-label", translate("languageButton"));
         render();
@@ -1165,6 +1237,22 @@
         await installPrompt.userChoice;
         installPrompt = null;
       });
+
+      // Cookie consent (Quebec's Law 25). Ads load either way; until the player accepts, Consent Mode
+      // keeps them non-personalised and cookie-free, and Google Analytics isn't loaded (see <head>).
+      const consent = document.querySelector("#consent");
+      function setConsent(granted) {
+        const value = granted ? "granted" : "denied";
+        try { localStorage.setItem("mahjong-consent", value); } catch (error) { }
+        gtag("consent", "update", { ad_storage: value, ad_user_data: value, ad_personalization: value, analytics_storage: value });
+        if (granted) loadAnalytics();
+        (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = granted ? 0 : 1;
+        consent.hidden = true;
+      }
+      document.querySelector("#consent-yes").addEventListener("click", () => setConsent(true));
+      document.querySelector("#consent-no").addEventListener("click", () => setConsent(false));
+      document.querySelector("#consent-open").addEventListener("click", () => { consent.hidden = false; });
+      try { consent.hidden = !!localStorage.getItem("mahjong-consent"); } catch (error) { consent.hidden = false; }
 
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
