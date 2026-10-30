@@ -1,5 +1,5 @@
 // Bump CACHE_VERSION whenever the app shell changes so clients pick up the update.
-const CACHE_VERSION = "mahjong-garden-v1";
+const CACHE_VERSION = "mahjong-garden-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
